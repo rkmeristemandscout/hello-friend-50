@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { teamSchema, type TeamValues } from "@/lib/auth-schemas";
 import { useCurrentOrg } from "@/hooks/use-current-org";
 import { useSession } from "@/hooks/use-session";
+import { usePermissions } from "@/hooks/use-permissions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,9 +21,9 @@ export const Route = createFileRoute("/_authenticated/teams")({
 function TeamsPage() {
   const { user } = useSession();
   const { currentMembership } = useCurrentOrg();
+  const { can } = usePermissions();
   const org = currentMembership?.organization;
-  const canManageOrg =
-    currentMembership?.role === "owner" || currentMembership?.role === "admin";
+  const canManageOrg = can("team.create");
   const qc = useQueryClient();
 
   const teams = useQuery({
