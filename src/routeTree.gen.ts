@@ -12,12 +12,16 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as JoinTokenRouteImport } from './routes/join.$token'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
+import { Route as AuthenticatedOrganizationsSlugSettingsRouteImport } from './routes/_authenticated/organizations.$slug.settings'
+import { Route as AuthenticatedOrganizationsSlugMembersRouteImport } from './routes/_authenticated/organizations.$slug.members'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -31,6 +35,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinTokenRoute = JoinTokenRouteImport.update({
+  id: '/join/$token',
+  path: '/join/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
@@ -64,26 +73,52 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOrganizationsSlugRoute =
+  AuthenticatedOrganizationsSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AuthenticatedOrganizationsRoute,
+  } as any)
+const AuthenticatedOrganizationsSlugSettingsRoute =
+  AuthenticatedOrganizationsSlugSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedOrganizationsSlugRoute,
+  } as any)
+const AuthenticatedOrganizationsSlugMembersRoute =
+  AuthenticatedOrganizationsSlugMembersRouteImport.update({
+    id: '/members',
+    path: '/members',
+    getParentRoute: () => AuthenticatedOrganizationsSlugRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/organizations': typeof AuthenticatedOrganizationsRoute
+  '/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
   '/profile': typeof AuthenticatedProfileRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/join/$token': typeof JoinTokenRoute
+  '/organizations/$slug': typeof AuthenticatedOrganizationsSlugRouteWithChildren
+  '/organizations/$slug/members': typeof AuthenticatedOrganizationsSlugMembersRoute
+  '/organizations/$slug/settings': typeof AuthenticatedOrganizationsSlugSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/organizations': typeof AuthenticatedOrganizationsRoute
+  '/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
   '/profile': typeof AuthenticatedProfileRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/join/$token': typeof JoinTokenRoute
+  '/organizations/$slug': typeof AuthenticatedOrganizationsSlugRouteWithChildren
+  '/organizations/$slug/members': typeof AuthenticatedOrganizationsSlugMembersRoute
+  '/organizations/$slug/settings': typeof AuthenticatedOrganizationsSlugSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -91,11 +126,15 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/organizations': typeof AuthenticatedOrganizationsRoute
+  '/_authenticated/organizations': typeof AuthenticatedOrganizationsRouteWithChildren
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/join/$token': typeof JoinTokenRoute
+  '/_authenticated/organizations/$slug': typeof AuthenticatedOrganizationsSlugRouteWithChildren
+  '/_authenticated/organizations/$slug/members': typeof AuthenticatedOrganizationsSlugMembersRoute
+  '/_authenticated/organizations/$slug/settings': typeof AuthenticatedOrganizationsSlugSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -108,6 +147,10 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
+    | '/join/$token'
+    | '/organizations/$slug'
+    | '/organizations/$slug/members'
+    | '/organizations/$slug/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -118,6 +161,10 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
+    | '/join/$token'
+    | '/organizations/$slug'
+    | '/organizations/$slug/members'
+    | '/organizations/$slug/settings'
   id:
     | '__root__'
     | '/'
@@ -129,12 +176,17 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/forgot-password'
     | '/auth/reset-password'
+    | '/join/$token'
+    | '/_authenticated/organizations/$slug'
+    | '/_authenticated/organizations/$slug/members'
+    | '/_authenticated/organizations/$slug/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  JoinTokenRoute: typeof JoinTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,6 +210,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join/$token': {
+      id: '/join/$token'
+      path: '/join/$token'
+      fullPath: '/join/$token'
+      preLoaderRoute: typeof JoinTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/reset-password': {
@@ -202,18 +261,72 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/organizations/$slug': {
+      id: '/_authenticated/organizations/$slug'
+      path: '/$slug'
+      fullPath: '/organizations/$slug'
+      preLoaderRoute: typeof AuthenticatedOrganizationsSlugRouteImport
+      parentRoute: typeof AuthenticatedOrganizationsRoute
+    }
+    '/_authenticated/organizations/$slug/settings': {
+      id: '/_authenticated/organizations/$slug/settings'
+      path: '/settings'
+      fullPath: '/organizations/$slug/settings'
+      preLoaderRoute: typeof AuthenticatedOrganizationsSlugSettingsRouteImport
+      parentRoute: typeof AuthenticatedOrganizationsSlugRoute
+    }
+    '/_authenticated/organizations/$slug/members': {
+      id: '/_authenticated/organizations/$slug/members'
+      path: '/members'
+      fullPath: '/organizations/$slug/members'
+      preLoaderRoute: typeof AuthenticatedOrganizationsSlugMembersRouteImport
+      parentRoute: typeof AuthenticatedOrganizationsSlugRoute
+    }
   }
 }
 
+interface AuthenticatedOrganizationsSlugRouteChildren {
+  AuthenticatedOrganizationsSlugMembersRoute: typeof AuthenticatedOrganizationsSlugMembersRoute
+  AuthenticatedOrganizationsSlugSettingsRoute: typeof AuthenticatedOrganizationsSlugSettingsRoute
+}
+
+const AuthenticatedOrganizationsSlugRouteChildren: AuthenticatedOrganizationsSlugRouteChildren =
+  {
+    AuthenticatedOrganizationsSlugMembersRoute:
+      AuthenticatedOrganizationsSlugMembersRoute,
+    AuthenticatedOrganizationsSlugSettingsRoute:
+      AuthenticatedOrganizationsSlugSettingsRoute,
+  }
+
+const AuthenticatedOrganizationsSlugRouteWithChildren =
+  AuthenticatedOrganizationsSlugRoute._addFileChildren(
+    AuthenticatedOrganizationsSlugRouteChildren,
+  )
+
+interface AuthenticatedOrganizationsRouteChildren {
+  AuthenticatedOrganizationsSlugRoute: typeof AuthenticatedOrganizationsSlugRouteWithChildren
+}
+
+const AuthenticatedOrganizationsRouteChildren: AuthenticatedOrganizationsRouteChildren =
+  {
+    AuthenticatedOrganizationsSlugRoute:
+      AuthenticatedOrganizationsSlugRouteWithChildren,
+  }
+
+const AuthenticatedOrganizationsRouteWithChildren =
+  AuthenticatedOrganizationsRoute._addFileChildren(
+    AuthenticatedOrganizationsRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRoute
+  AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRouteWithChildren
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRoute,
+  AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRouteWithChildren,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
 }
 
@@ -238,6 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  JoinTokenRoute: JoinTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

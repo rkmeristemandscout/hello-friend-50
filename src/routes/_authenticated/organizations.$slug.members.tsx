@@ -40,11 +40,20 @@ function MembersPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("organization_members")
-        .select("id, user_id, role, created_at, profile:user_id(full_name, avatar_url)")
+        .select("id, user_id, role, created_at")
         .eq("organization_id", org!.id)
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return data;
+      const ids = Array.from(new Set((data ?? []).map((m) => m.user_id)));
+      let profiles: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
+      if (ids.length) {
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id, full_name, avatar_url")
+          .in("id", ids);
+        profiles = Object.fromEntries((profs ?? []).map((p) => [p.id, p]));
+      }
+      return (data ?? []).map((m) => ({ ...m, profile: profiles[m.user_id] ?? null }));
     },
   });
 
