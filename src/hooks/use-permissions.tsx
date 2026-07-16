@@ -30,13 +30,13 @@ export function usePermissions() {
   const { user } = useSession();
   const { currentOrgId } = useCurrentOrg();
 
+  const orgArg = currentOrgId ?? "00000000-0000-0000-0000-000000000000";
+
   const query = useQuery({
     enabled: !!user,
     queryKey: ["permissions", user?.id, currentOrgId],
     queryFn: async (): Promise<string[]> => {
-      const { data, error } = await supabase.rpc("get_user_permissions", {
-        _org: currentOrgId,
-      });
+      const { data, error } = await supabase.rpc("get_user_permissions", { _org: orgArg });
       if (error) throw error;
       return (data ?? []).map((r: { permission_key: string }) => r.permission_key);
     },
@@ -46,7 +46,7 @@ export function usePermissions() {
     enabled: !!user,
     queryKey: ["user-roles", user?.id, currentOrgId],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_user_roles", { _org: currentOrgId });
+      const { data, error } = await supabase.rpc("get_user_roles", { _org: orgArg });
       if (error) throw error;
       return data ?? [];
     },
