@@ -54,6 +54,27 @@ function Layout() {
                   Organizations
                 </Link>
                 <Link
+                  to="/teams"
+                  className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
+                  activeProps={{ className: "active" }}
+                >
+                  Teams
+                </Link>
+                <Link
+                  to="/departments"
+                  className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
+                  activeProps={{ className: "active" }}
+                >
+                  Departments
+                </Link>
+                <Link
+                  to="/invitations"
+                  className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
+                  activeProps={{ className: "active" }}
+                >
+                  Invitations
+                </Link>
+                <Link
                   to="/profile"
                   className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
                   activeProps={{ className: "active" }}
