@@ -143,8 +143,8 @@ function ProfilePage() {
           )}
         </div>
         <div>
-          <Label>Email</Label>
-          <Input value={user?.email ?? ""} disabled />
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" name="email" value={user?.email ?? ""} disabled />
         </div>
         <Button type="submit" disabled={saveProfile.isPending}>
           {saveProfile.isPending ? "Saving…" : "Save changes"}
