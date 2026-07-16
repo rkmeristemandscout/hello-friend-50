@@ -1,12 +1,13 @@
-import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useSearch, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { CreditCard, ExternalLink, Loader2, CheckCircle2, XCircle, RefreshCw, ArrowUpRight } from "lucide-react";
+import { CreditCard, ExternalLink, Loader2, CheckCircle2, XCircle, RefreshCw, ArrowUpRight, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentOrg } from "@/hooks/use-current-org";
+import { usePermissions } from "@/hooks/use-permissions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/_authenticated/billing")({
 
 function BillingPage() {
   const { currentOrgId, currentMembership } = useCurrentOrg();
+  const { isSuperAdmin } = usePermissions();
   const qc = useQueryClient();
   const search = useSearch({ from: "/_authenticated/billing" });
   const isAdmin = currentMembership?.role === "owner" || currentMembership?.role === "admin";
@@ -162,12 +164,19 @@ function BillingPage() {
           <h1 className="text-2xl font-semibold tracking-tight">Billing</h1>
           <p className="text-sm text-muted-foreground">Manage your plan, payment method, and invoices.</p>
         </div>
-        {isAdmin && hasStripeSub && (
-          <Button variant="outline" onClick={() => openPortal.mutate()} disabled={openPortal.isPending}>
-            {openPortal.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CreditCard className="mr-2 h-4 w-4" />}
-            Manage in Stripe
-          </Button>
-        )}
+        <div className="flex flex-wrap gap-2">
+          {isSuperAdmin && (
+            <Button variant="outline" asChild>
+              <Link to="/billing/plans"><Settings className="mr-2 h-4 w-4" /> Plan Stripe mapping</Link>
+            </Button>
+          )}
+          {isAdmin && hasStripeSub && (
+            <Button variant="outline" onClick={() => openPortal.mutate()} disabled={openPortal.isPending}>
+              {openPortal.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CreditCard className="mr-2 h-4 w-4" />}
+              Manage in Stripe
+            </Button>
+          )}
+        </div>
       </header>
 
       {!isAdmin && (

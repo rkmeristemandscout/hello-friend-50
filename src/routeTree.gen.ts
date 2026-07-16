@@ -30,6 +30,7 @@ import { Route as AuthenticatedApiKeysRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedTeamsTeamIdRouteImport } from './routes/_authenticated/teams.$teamId'
 import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
+import { Route as AuthenticatedBillingPlansRouteImport } from './routes/_authenticated/billing.plans'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe.webhook'
 import { Route as AuthenticatedOrganizationsSlugSettingsRouteImport } from './routes/_authenticated/organizations.$slug.settings'
 import { Route as AuthenticatedOrganizationsSlugMembersRouteImport } from './routes/_authenticated/organizations.$slug.members'
@@ -144,6 +145,12 @@ const AuthenticatedOrganizationsSlugRoute =
     path: '/$slug',
     getParentRoute: () => AuthenticatedOrganizationsRoute,
   } as any)
+const AuthenticatedBillingPlansRoute =
+  AuthenticatedBillingPlansRouteImport.update({
+    id: '/plans',
+    path: '/plans',
+    getParentRoute: () => AuthenticatedBillingRoute,
+  } as any)
 const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   id: '/api/public/stripe/webhook',
   path: '/api/public/stripe/webhook',
@@ -168,7 +175,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/api-keys': typeof AuthenticatedApiKeysRoute
   '/audit-logs': typeof AuthenticatedAuditLogsRoute
-  '/billing': typeof AuthenticatedBillingRoute
+  '/billing': typeof AuthenticatedBillingRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/feature-flags': typeof AuthenticatedFeatureFlagsRoute
@@ -181,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/join/$token': typeof JoinTokenRoute
+  '/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/organizations/$slug': typeof AuthenticatedOrganizationsSlugRouteWithChildren
   '/teams/$teamId': typeof AuthenticatedTeamsTeamIdRoute
   '/organizations/$slug/members': typeof AuthenticatedOrganizationsSlugMembersRoute
@@ -193,7 +201,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/api-keys': typeof AuthenticatedApiKeysRoute
   '/audit-logs': typeof AuthenticatedAuditLogsRoute
-  '/billing': typeof AuthenticatedBillingRoute
+  '/billing': typeof AuthenticatedBillingRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/feature-flags': typeof AuthenticatedFeatureFlagsRoute
@@ -206,6 +214,7 @@ export interface FileRoutesByTo {
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/join/$token': typeof JoinTokenRoute
+  '/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/organizations/$slug': typeof AuthenticatedOrganizationsSlugRouteWithChildren
   '/teams/$teamId': typeof AuthenticatedTeamsTeamIdRoute
   '/organizations/$slug/members': typeof AuthenticatedOrganizationsSlugMembersRoute
@@ -220,7 +229,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/api-keys': typeof AuthenticatedApiKeysRoute
   '/_authenticated/audit-logs': typeof AuthenticatedAuditLogsRoute
-  '/_authenticated/billing': typeof AuthenticatedBillingRoute
+  '/_authenticated/billing': typeof AuthenticatedBillingRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/feature-flags': typeof AuthenticatedFeatureFlagsRoute
@@ -233,6 +242,7 @@ export interface FileRoutesById {
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/join/$token': typeof JoinTokenRoute
+  '/_authenticated/billing/plans': typeof AuthenticatedBillingPlansRoute
   '/_authenticated/organizations/$slug': typeof AuthenticatedOrganizationsSlugRouteWithChildren
   '/_authenticated/teams/$teamId': typeof AuthenticatedTeamsTeamIdRoute
   '/_authenticated/organizations/$slug/members': typeof AuthenticatedOrganizationsSlugMembersRoute
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/join/$token'
+    | '/billing/plans'
     | '/organizations/$slug'
     | '/teams/$teamId'
     | '/organizations/$slug/members'
@@ -285,6 +296,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/join/$token'
+    | '/billing/plans'
     | '/organizations/$slug'
     | '/teams/$teamId'
     | '/organizations/$slug/members'
@@ -311,6 +323,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/join/$token'
+    | '/_authenticated/billing/plans'
     | '/_authenticated/organizations/$slug'
     | '/_authenticated/teams/$teamId'
     | '/_authenticated/organizations/$slug/members'
@@ -475,6 +488,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizationsSlugRouteImport
       parentRoute: typeof AuthenticatedOrganizationsRoute
     }
+    '/_authenticated/billing/plans': {
+      id: '/_authenticated/billing/plans'
+      path: '/plans'
+      fullPath: '/billing/plans'
+      preLoaderRoute: typeof AuthenticatedBillingPlansRouteImport
+      parentRoute: typeof AuthenticatedBillingRoute
+    }
     '/api/public/stripe/webhook': {
       id: '/api/public/stripe/webhook'
       path: '/api/public/stripe/webhook'
@@ -498,6 +518,17 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedBillingRouteChildren {
+  AuthenticatedBillingPlansRoute: typeof AuthenticatedBillingPlansRoute
+}
+
+const AuthenticatedBillingRouteChildren: AuthenticatedBillingRouteChildren = {
+  AuthenticatedBillingPlansRoute: AuthenticatedBillingPlansRoute,
+}
+
+const AuthenticatedBillingRouteWithChildren =
+  AuthenticatedBillingRoute._addFileChildren(AuthenticatedBillingRouteChildren)
 
 interface AuthenticatedOrganizationsSlugRouteChildren {
   AuthenticatedOrganizationsSlugMembersRoute: typeof AuthenticatedOrganizationsSlugMembersRoute
@@ -547,7 +578,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedApiKeysRoute: typeof AuthenticatedApiKeysRoute
   AuthenticatedAuditLogsRoute: typeof AuthenticatedAuditLogsRoute
-  AuthenticatedBillingRoute: typeof AuthenticatedBillingRoute
+  AuthenticatedBillingRoute: typeof AuthenticatedBillingRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedFeatureFlagsRoute: typeof AuthenticatedFeatureFlagsRoute
@@ -562,7 +593,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedApiKeysRoute: AuthenticatedApiKeysRoute,
   AuthenticatedAuditLogsRoute: AuthenticatedAuditLogsRoute,
-  AuthenticatedBillingRoute: AuthenticatedBillingRoute,
+  AuthenticatedBillingRoute: AuthenticatedBillingRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedFeatureFlagsRoute: AuthenticatedFeatureFlagsRoute,
