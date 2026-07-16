@@ -176,6 +176,30 @@ export type Database = {
         }
         Relationships: []
       }
+      permissions: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          key: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          key: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          key?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -197,6 +221,72 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      role_permissions: {
+        Row: {
+          created_at: string
+          permission_id: string
+          role_id: string
+        }
+        Insert: {
+          created_at?: string
+          permission_id: string
+          role_id: string
+        }
+        Update: {
+          created_at?: string
+          permission_id?: string
+          role_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "role_permissions_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roles: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_system: boolean
+          key: string
+          name: string
+          rank: number
+          scope: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          is_system?: boolean
+          key: string
+          name: string
+          rank?: number
+          scope: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_system?: boolean
+          key?: string
+          name?: string
+          rank?: number
+          scope?: string
         }
         Relationships: []
       }
@@ -279,6 +369,48 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          granted_by: string | null
+          id: string
+          organization_id: string | null
+          role_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          organization_id?: string | null
+          role_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          organization_id?: string | null
+          role_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -332,6 +464,20 @@ export type Database = {
         Args: { _invitation_id: string }
         Returns: undefined
       }
+      get_user_permissions: {
+        Args: { _org: string }
+        Returns: {
+          permission_key: string
+        }[]
+      }
+      get_user_roles: {
+        Args: { _org: string }
+        Returns: {
+          organization_id: string
+          role_key: string
+          role_name: string
+        }[]
+      }
       has_org_role: {
         Args: {
           _org: string
@@ -340,7 +486,12 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_permission: {
+        Args: { _org: string; _perm: string; _user: string }
+        Returns: boolean
+      }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
+      is_super_admin: { Args: { _user: string }; Returns: boolean }
       is_team_member: {
         Args: { _team: string; _user: string }
         Returns: boolean
