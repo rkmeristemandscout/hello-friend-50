@@ -63,9 +63,8 @@ function MembersPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("organization_invitations")
-        .select("id, email, role, token, accepted_at, expires_at, created_at")
+        .select("id, email, role, token, accepted_at, rejected_at, expires_at, created_at")
         .eq("organization_id", org!.id)
-        .is("accepted_at", null)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
@@ -111,6 +110,30 @@ function MembersPage() {
     },
     onSuccess: () => {
       toast.success("Invitation revoked");
+      qc.invalidateQueries({ queryKey: ["invitations", org?.id] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const resend = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc("resend_invitation", { _invitation_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Invitation resent with a new link");
+      qc.invalidateQueries({ queryKey: ["invitations", org?.id] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const expire = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc("expire_invitation", { _invitation_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Invitation expired");
       qc.invalidateQueries({ queryKey: ["invitations", org?.id] });
     },
     onError: (e: Error) => toast.error(e.message),
