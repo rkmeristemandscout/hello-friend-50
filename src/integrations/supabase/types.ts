@@ -261,6 +261,65 @@ export type Database = {
           },
         ]
       }
+      invoices: {
+        Row: {
+          amount_due_cents: number
+          amount_paid_cents: number
+          created_at: string
+          currency: string
+          hosted_invoice_url: string | null
+          id: string
+          invoice_pdf: string | null
+          number: string | null
+          organization_id: string
+          period_end: string | null
+          period_start: string | null
+          status: string
+          stripe_invoice_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_due_cents?: number
+          amount_paid_cents?: number
+          created_at?: string
+          currency?: string
+          hosted_invoice_url?: string | null
+          id?: string
+          invoice_pdf?: string | null
+          number?: string | null
+          organization_id: string
+          period_end?: string | null
+          period_start?: string | null
+          status: string
+          stripe_invoice_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_due_cents?: number
+          amount_paid_cents?: number
+          created_at?: string
+          currency?: string
+          hosted_invoice_url?: string | null
+          id?: string
+          invoice_pdf?: string | null
+          number?: string | null
+          organization_id?: string
+          period_end?: string | null
+          period_start?: string | null
+          status?: string
+          stripe_invoice_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -429,6 +488,59 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          organization_id: string
+          paid_at: string | null
+          receipt_url: string | null
+          status: string
+          stripe_charge_id: string | null
+          stripe_invoice_id: string | null
+          stripe_payment_intent_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          organization_id: string
+          paid_at?: string | null
+          receipt_url?: string | null
+          status: string
+          stripe_charge_id?: string | null
+          stripe_invoice_id?: string | null
+          stripe_payment_intent_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          organization_id?: string
+          paid_at?: string | null
+          receipt_url?: string | null
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_invoice_id?: string | null
+          stripe_payment_intent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       permissions: {
         Row: {
           category: string
@@ -450,6 +562,72 @@ export type Database = {
           description?: string
           id?: string
           key?: string
+        }
+        Relationships: []
+      }
+      plans: {
+        Row: {
+          api_key_limit: number | null
+          created_at: string
+          currency: string
+          department_limit: number | null
+          description: string | null
+          features: Json
+          id: string
+          interval: string
+          is_active: boolean
+          key: string
+          member_limit: number | null
+          name: string
+          price_cents: number
+          sort_order: number
+          storage_limit_mb: number | null
+          stripe_price_id: string | null
+          stripe_product_id: string | null
+          team_limit: number | null
+          updated_at: string
+        }
+        Insert: {
+          api_key_limit?: number | null
+          created_at?: string
+          currency?: string
+          department_limit?: number | null
+          description?: string | null
+          features?: Json
+          id?: string
+          interval?: string
+          is_active?: boolean
+          key: string
+          member_limit?: number | null
+          name: string
+          price_cents?: number
+          sort_order?: number
+          storage_limit_mb?: number | null
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
+          team_limit?: number | null
+          updated_at?: string
+        }
+        Update: {
+          api_key_limit?: number | null
+          created_at?: string
+          currency?: string
+          department_limit?: number | null
+          description?: string | null
+          features?: Json
+          id?: string
+          interval?: string
+          is_active?: boolean
+          key?: string
+          member_limit?: number | null
+          name?: string
+          price_cents?: number
+          sort_order?: number
+          storage_limit_mb?: number | null
+          stripe_price_id?: string | null
+          stripe_product_id?: string | null
+          team_limit?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -543,6 +721,72 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          canceled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          metadata: Json
+          organization_id: string
+          plan_id: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          trial_end: string | null
+          updated_at: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          metadata?: Json
+          organization_id: string
+          plan_id?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          plan_id?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_members: {
         Row: {
           created_at: string
@@ -615,6 +859,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "teams_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      usage_metrics: {
+        Row: {
+          id: string
+          metadata: Json
+          metric: string
+          organization_id: string
+          period_end: string
+          period_start: string
+          recorded_at: string
+          value: number
+        }
+        Insert: {
+          id?: string
+          metadata?: Json
+          metric: string
+          organization_id: string
+          period_end?: string
+          period_start?: string
+          recorded_at?: string
+          value?: number
+        }
+        Update: {
+          id?: string
+          metadata?: Json
+          metric?: string
+          organization_id?: string
+          period_end?: string
+          period_start?: string
+          recorded_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_metrics_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"

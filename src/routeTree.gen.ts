@@ -24,11 +24,13 @@ import { Route as AuthenticatedInvitationsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedFeatureFlagsRouteImport } from './routes/_authenticated/feature-flags'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedBillingRouteImport } from './routes/_authenticated/billing'
 import { Route as AuthenticatedAuditLogsRouteImport } from './routes/_authenticated/audit-logs'
 import { Route as AuthenticatedApiKeysRouteImport } from './routes/_authenticated/api-keys'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedTeamsTeamIdRouteImport } from './routes/_authenticated/teams.$teamId'
 import { Route as AuthenticatedOrganizationsSlugRouteImport } from './routes/_authenticated/organizations.$slug'
+import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe.webhook'
 import { Route as AuthenticatedOrganizationsSlugSettingsRouteImport } from './routes/_authenticated/organizations.$slug.settings'
 import { Route as AuthenticatedOrganizationsSlugMembersRouteImport } from './routes/_authenticated/organizations.$slug.members'
 
@@ -110,6 +112,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBillingRoute = AuthenticatedBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAuditLogsRoute = AuthenticatedAuditLogsRouteImport.update({
   id: '/audit-logs',
   path: '/audit-logs',
@@ -137,6 +144,11 @@ const AuthenticatedOrganizationsSlugRoute =
     path: '/$slug',
     getParentRoute: () => AuthenticatedOrganizationsRoute,
   } as any)
+const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
+  id: '/api/public/stripe/webhook',
+  path: '/api/public/stripe/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedOrganizationsSlugSettingsRoute =
   AuthenticatedOrganizationsSlugSettingsRouteImport.update({
     id: '/settings',
@@ -156,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/api-keys': typeof AuthenticatedApiKeysRoute
   '/audit-logs': typeof AuthenticatedAuditLogsRoute
+  '/billing': typeof AuthenticatedBillingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/feature-flags': typeof AuthenticatedFeatureFlagsRoute
@@ -172,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/teams/$teamId': typeof AuthenticatedTeamsTeamIdRoute
   '/organizations/$slug/members': typeof AuthenticatedOrganizationsSlugMembersRoute
   '/organizations/$slug/settings': typeof AuthenticatedOrganizationsSlugSettingsRoute
+  '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -179,6 +193,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/api-keys': typeof AuthenticatedApiKeysRoute
   '/audit-logs': typeof AuthenticatedAuditLogsRoute
+  '/billing': typeof AuthenticatedBillingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/feature-flags': typeof AuthenticatedFeatureFlagsRoute
@@ -195,6 +210,7 @@ export interface FileRoutesByTo {
   '/teams/$teamId': typeof AuthenticatedTeamsTeamIdRoute
   '/organizations/$slug/members': typeof AuthenticatedOrganizationsSlugMembersRoute
   '/organizations/$slug/settings': typeof AuthenticatedOrganizationsSlugSettingsRoute
+  '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -204,6 +220,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/api-keys': typeof AuthenticatedApiKeysRoute
   '/_authenticated/audit-logs': typeof AuthenticatedAuditLogsRoute
+  '/_authenticated/billing': typeof AuthenticatedBillingRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/feature-flags': typeof AuthenticatedFeatureFlagsRoute
@@ -220,6 +237,7 @@ export interface FileRoutesById {
   '/_authenticated/teams/$teamId': typeof AuthenticatedTeamsTeamIdRoute
   '/_authenticated/organizations/$slug/members': typeof AuthenticatedOrganizationsSlugMembersRoute
   '/_authenticated/organizations/$slug/settings': typeof AuthenticatedOrganizationsSlugSettingsRoute
+  '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -229,6 +247,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api-keys'
     | '/audit-logs'
+    | '/billing'
     | '/dashboard'
     | '/departments'
     | '/feature-flags'
@@ -245,6 +264,7 @@ export interface FileRouteTypes {
     | '/teams/$teamId'
     | '/organizations/$slug/members'
     | '/organizations/$slug/settings'
+    | '/api/public/stripe/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -252,6 +272,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api-keys'
     | '/audit-logs'
+    | '/billing'
     | '/dashboard'
     | '/departments'
     | '/feature-flags'
@@ -268,6 +289,7 @@ export interface FileRouteTypes {
     | '/teams/$teamId'
     | '/organizations/$slug/members'
     | '/organizations/$slug/settings'
+    | '/api/public/stripe/webhook'
   id:
     | '__root__'
     | '/'
@@ -276,6 +298,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/api-keys'
     | '/_authenticated/audit-logs'
+    | '/_authenticated/billing'
     | '/_authenticated/dashboard'
     | '/_authenticated/departments'
     | '/_authenticated/feature-flags'
@@ -292,6 +315,7 @@ export interface FileRouteTypes {
     | '/_authenticated/teams/$teamId'
     | '/_authenticated/organizations/$slug/members'
     | '/_authenticated/organizations/$slug/settings'
+    | '/api/public/stripe/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -299,6 +323,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   JoinTokenRoute: typeof JoinTokenRoute
+  ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -408,6 +433,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/billing': {
+      id: '/_authenticated/billing'
+      path: '/billing'
+      fullPath: '/billing'
+      preLoaderRoute: typeof AuthenticatedBillingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/audit-logs': {
       id: '/_authenticated/audit-logs'
       path: '/audit-logs'
@@ -442,6 +474,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/organizations/$slug'
       preLoaderRoute: typeof AuthenticatedOrganizationsSlugRouteImport
       parentRoute: typeof AuthenticatedOrganizationsRoute
+    }
+    '/api/public/stripe/webhook': {
+      id: '/api/public/stripe/webhook'
+      path: '/api/public/stripe/webhook'
+      fullPath: '/api/public/stripe/webhook'
+      preLoaderRoute: typeof ApiPublicStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/organizations/$slug/settings': {
       id: '/_authenticated/organizations/$slug/settings'
@@ -508,6 +547,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedApiKeysRoute: typeof AuthenticatedApiKeysRoute
   AuthenticatedAuditLogsRoute: typeof AuthenticatedAuditLogsRoute
+  AuthenticatedBillingRoute: typeof AuthenticatedBillingRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedFeatureFlagsRoute: typeof AuthenticatedFeatureFlagsRoute
@@ -522,6 +562,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedApiKeysRoute: AuthenticatedApiKeysRoute,
   AuthenticatedAuditLogsRoute: AuthenticatedAuditLogsRoute,
+  AuthenticatedBillingRoute: AuthenticatedBillingRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedFeatureFlagsRoute: AuthenticatedFeatureFlagsRoute,
@@ -554,6 +595,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   JoinTokenRoute: JoinTokenRoute,
+  ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

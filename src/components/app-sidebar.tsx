@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Building2, Users, Boxes, Mail, ShieldCheck, UserCircle,
-  KeyRound, ScrollText, Flag, Shield,
+  KeyRound, ScrollText, Flag, Shield, CreditCard,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -27,6 +27,7 @@ export function AppSidebar() {
     { to: "/api-keys", label: "API Keys", icon: KeyRound, show: can("org.manage_api_keys") },
     { to: "/audit-logs", label: "Audit Logs", icon: ScrollText, show: can("audit.view") || isSuperAdmin },
     { to: "/feature-flags", label: "Feature Flags", icon: Flag, show: true },
+    { to: "/billing", label: "Billing", icon: CreditCard, show: currentMembership?.role === "owner" || currentMembership?.role === "admin" },
     { to: "/admin", label: "Admin Console", icon: Shield, show: isSuperAdmin },
     { to: "/profile", label: "Profile", icon: UserCircle, show: true },
   ].filter((i) => i.show);
