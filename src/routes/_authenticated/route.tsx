@@ -39,50 +39,7 @@ function Layout() {
             <div className="flex items-center gap-6">
               <Link to="/dashboard" className="font-semibold">Stackly</Link>
               <OrgSwitcher />
-              <nav className="flex gap-1 text-sm">
-                <Link
-                  to="/dashboard"
-                  className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
-                  activeProps={{ className: "active" }}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/organizations"
-                  className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
-                  activeProps={{ className: "active" }}
-                >
-                  Organizations
-                </Link>
-                <Link
-                  to="/teams"
-                  className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
-                  activeProps={{ className: "active" }}
-                >
-                  Teams
-                </Link>
-                <Link
-                  to="/departments"
-                  className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
-                  activeProps={{ className: "active" }}
-                >
-                  Departments
-                </Link>
-                <Link
-                  to="/invitations"
-                  className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
-                  activeProps={{ className: "active" }}
-                >
-                  Invitations
-                </Link>
-                <Link
-                  to="/profile"
-                  className="rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground"
-                  activeProps={{ className: "active" }}
-                >
-                  Profile
-                </Link>
-              </nav>
+              <Nav />
             </div>
             <div className="flex items-center gap-3">
               <span className="hidden text-sm text-muted-foreground sm:inline">{user?.email}</span>
@@ -95,5 +52,34 @@ function Layout() {
         </main>
       </div>
     </OrganizationProvider>
+  );
+}
+
+function Nav() {
+  const { can, isSuperAdmin } = usePermissions();
+  const linkClass =
+    "rounded-md px-3 py-1.5 text-muted-foreground hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:text-foreground";
+  const items: { to: string; label: string; show: boolean }[] = [
+    { to: "/dashboard", label: "Dashboard", show: true },
+    { to: "/organizations", label: "Organizations", show: true },
+    { to: "/teams", label: "Teams", show: can(["team.view", "team.create"]) },
+    { to: "/departments", label: "Departments", show: can("department.view") },
+    { to: "/invitations", label: "Invitations", show: can("invitation.view") },
+    { to: "/roles", label: "Roles", show: can("org.manage_users") || isSuperAdmin },
+    { to: "/profile", label: "Profile", show: true },
+  ];
+  return (
+    <nav className="flex gap-1 text-sm">
+      {items.filter((i) => i.show).map((i) => (
+        <Link
+          key={i.to}
+          to={i.to}
+          className={linkClass}
+          activeProps={{ className: "active" }}
+        >
+          {i.label}
+        </Link>
+      ))}
+    </nav>
   );
 }
