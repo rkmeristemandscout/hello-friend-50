@@ -1115,6 +1115,7 @@ export type Database = {
         }
       }
       revoke_api_key: { Args: { _id: string }; Returns: undefined }
+      shares_org_with: { Args: { _other: string }; Returns: boolean }
       team_org: { Args: { _team: string }; Returns: string }
       write_audit_log: {
         Args: {
