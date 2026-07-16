@@ -1,4 +1,7 @@
-export function renderErrorPage(): string {
+export function renderErrorPage(requestId?: string): string {
+  const idBlock = requestId
+    ? `<p class="rid">Request ID: <code>${escapeHtml(requestId)}</code></p>`
+    : "";
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -14,6 +17,8 @@ export function renderErrorPage(): string {
       a, button { padding: 0.5rem 1rem; border-radius: 0.375rem; font: inherit; cursor: pointer; text-decoration: none; border: 1px solid transparent; }
       .primary { background: #111; color: #fff; }
       .secondary { background: #fff; color: #111; border-color: #d1d5db; }
+      .rid { font-size: 12px; color: #6b7280; margin-top: 1rem; }
+      .rid code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
     </style>
   </head>
   <body>
@@ -24,7 +29,12 @@ export function renderErrorPage(): string {
         <button class="primary" onclick="location.reload()">Try again</button>
         <a class="secondary" href="/">Go home</a>
       </div>
+      ${idBlock}
     </div>
   </body>
 </html>`;
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
 }
