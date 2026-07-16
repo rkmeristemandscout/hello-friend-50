@@ -25,10 +25,7 @@ export const forgotSchema = z.object({ email: emailSchema });
 export type ForgotValues = z.infer<typeof forgotSchema>;
 
 export const resetSchema = z
-  .object({
-    password: passwordSchema,
-    confirm: z.string(),
-  })
+  .object({ password: passwordSchema, confirm: z.string() })
   .refine((d) => d.password === d.confirm, { message: "Passwords don't match", path: ["confirm"] });
 export type ResetValues = z.infer<typeof resetSchema>;
 
@@ -38,10 +35,7 @@ export const profileSchema = z.object({
 export type ProfileValues = z.infer<typeof profileSchema>;
 
 export const slugSchema = z
-  .string()
-  .trim()
-  .min(2)
-  .max(40)
+  .string().trim().min(2).max(40)
   .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers, and hyphens only");
 
 export const orgSchema = z.object({
@@ -64,3 +58,17 @@ export const inviteSchema = z.object({
   role: z.enum(["admin", "member"]),
 });
 export type InviteValues = z.infer<typeof inviteSchema>;
+
+export const teamSchema = z.object({
+  name: z.string().trim().min(2).max(60),
+  slug: slugSchema,
+  description: z.string().trim().max(280).optional().or(z.literal("")),
+});
+export type TeamValues = z.infer<typeof teamSchema>;
+
+export const departmentSchema = z.object({
+  name: z.string().trim().min(2).max(60),
+  slug: slugSchema,
+  description: z.string().trim().max(280).optional().or(z.literal("")),
+});
+export type DepartmentValues = z.infer<typeof departmentSchema>;
