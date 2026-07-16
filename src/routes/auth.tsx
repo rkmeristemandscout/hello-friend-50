@@ -30,7 +30,14 @@ function AuthPage() {
   const [tab, setTab] = useState<"signin" | "signup">(mode);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: redirect ?? "/dashboard" });
+    if (loading || !user) return;
+    const pending = typeof window !== "undefined" ? window.localStorage.getItem("stackly.pendingInviteToken") : null;
+    if (pending) {
+      window.localStorage.removeItem("stackly.pendingInviteToken");
+      navigate({ to: "/join/$token", params: { token: pending } });
+      return;
+    }
+    navigate({ to: redirect ?? "/dashboard" });
   }, [user, loading, navigate, redirect]);
 
   return (
