@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { OrganizationProvider } from "@/hooks/use-current-org";
 import { OrgSwitcher } from "@/components/org-switcher";
+import { usePermissions } from "@/hooks/use-permissions";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
