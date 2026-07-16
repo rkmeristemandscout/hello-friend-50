@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { departmentSchema, type DepartmentValues } from "@/lib/auth-schemas";
 import { useCurrentOrg } from "@/hooks/use-current-org";
 import { useSession } from "@/hooks/use-session";
+import { usePermissions } from "@/hooks/use-permissions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,9 +27,9 @@ export const Route = createFileRoute("/_authenticated/departments")({
 function DepartmentsPage() {
   const { user } = useSession();
   const { currentMembership } = useCurrentOrg();
+  const { can } = usePermissions();
   const org = currentMembership?.organization;
-  const canManage =
-    currentMembership?.role === "owner" || currentMembership?.role === "admin";
+  const canManage = can(["department.create", "department.update", "department.delete"]);
   const qc = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
 
